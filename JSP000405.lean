@@ -82,8 +82,7 @@ lemma axisConfig_no_determined_circle (n : ℕ) (C : Circle) :
 lemma axisConfig_circleCount_zero (n : ℕ) : circleCount (axisConfig n) = 0 := by
   have hset : {C : Circle | DeterminedCircle (axisConfig n) C} = ∅ := by
     ext C
-    simp only [Set.mem_setOf_eq, Set.not_mem_empty, iff_false]
-    exact axisConfig_no_determined_circle n C
+    simp [axisConfig_no_determined_circle n C]
   simp [circleCount, hset]
 
 lemma axisConfig_not_all_concyclic {n : ℕ} (hn : 3 ≤ n) :

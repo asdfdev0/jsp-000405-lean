@@ -14,11 +14,10 @@ The historical/source problem (Erdős problem #506) is stronger. Its source disc
 
 ```lean
 theorem jsp_000405_literal (n : ℕ) (hn : 3 ≤ n) :
-    ∃ P : Fin n → Point,
-      Function.Injective P ∧
-      ¬ AllConcyclic P ∧
-      circleCount P = 0
+    IsLeast (LiteralCircleCounts n) 0
 ```
+
+Here `LiteralCircleCounts n` is the set of circle counts attained by injectively indexed planar `n`-point configurations satisfying exactly the published condition `¬ AllConcyclic P`. The theorem proves that `0` belongs to that set and is its least element.
 
 The witness is `axisConfig n`, the `n` distinct points `(0,0), (1,0), ..., (n-1,0)`.
 
@@ -32,7 +31,10 @@ A circle is counted as determined by a configuration when it contains three dist
 
 ## Reproduction
 
-The project pins Lean and Mathlib in `lean-toolchain` and `lakefile.toml`.
+The project pins:
+
+- Lean: `leanprover/lean4:v4.33.0`
+- Mathlib: `db584cd6d46c92f209a44c0f1c829460d327499d`
 
 ```bash
 lake exe cache get

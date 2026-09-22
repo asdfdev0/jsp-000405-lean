@@ -32,6 +32,12 @@ def DeterminedCircle {n : ℕ} (P : Fin n → Point) (C : Circle) : Prop :=
 noncomputable def circleCount {n : ℕ} (P : Fin n → Point) : ℕ :=
   Set.ncard {C : Circle | DeterminedCircle P C}
 
+/-- Circle counts attained by injectively indexed `n`-point configurations satisfying
+exactly the literal JSP condition: the points are not all concyclic. -/
+noncomputable def LiteralCircleCounts (n : ℕ) : Set ℕ :=
+  {k | ∃ P : Fin n → Point,
+    Function.Injective P ∧ ¬ AllConcyclic P ∧ circleCount P = k}
+
 lemma axisConfig_injective (n : ℕ) : Function.Injective (axisConfig n) := by
   intro i j hij
   apply Fin.ext
@@ -107,17 +113,19 @@ lemma axisConfig_not_all_concyclic {n : ℕ} (hn : 3 ≤ n) :
 
 /-- Literal solution of the published JSP-000405 wording.
 
-For every `n ≥ 3`, there is an injectively indexed planar `n`-point set which is
-not all concyclic and determines zero circles: take `n` distinct points on a line.
-Thus the literal minimum number of determined circles is `0`.
+For every `n ≥ 3`, the least number of circles determined by an injectively indexed
+planar `n`-point configuration whose points are not all concyclic is `0`.
+The witness is the collinear configuration `axisConfig n`.
 -/
 theorem jsp_000405_literal (n : ℕ) (hn : 3 ≤ n) :
-    ∃ P : Fin n → Point,
-      Function.Injective P ∧
-      ¬ AllConcyclic P ∧
-      circleCount P = 0 := by
-  refine ⟨axisConfig n, axisConfig_injective n, axisConfig_not_all_concyclic hn, ?_⟩
-  exact axisConfig_circleCount_zero n
+    IsLeast (LiteralCircleCounts n) 0 := by
+  constructor
+  · change ∃ P : Fin n → Point,
+      Function.Injective P ∧ ¬ AllConcyclic P ∧ circleCount P = 0
+    exact ⟨axisConfig n, axisConfig_injective n,
+      axisConfig_not_all_concyclic hn, axisConfig_circleCount_zero n⟩
+  · intro k hk
+    exact Nat.zero_le k
 
 #print axioms jsp_000405_literal
 

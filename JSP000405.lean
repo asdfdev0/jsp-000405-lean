@@ -35,8 +35,9 @@ noncomputable def circleCount {n : ℕ} (P : Fin n → Point) : ℕ :=
 lemma axisConfig_injective (n : ℕ) : Function.Injective (axisConfig n) := by
   intro i j hij
   apply Fin.ext
-  have hfirst := congrArg Prod.fst hij
-  simpa [axisConfig] using hfirst
+  have hfirst : (i.1 : ℝ) = (j.1 : ℝ) := by
+    simpa [axisConfig] using congrArg Prod.fst hij
+  exact_mod_cast hfirst
 
 lemma three_axis_points_not_concyclic
     {n : ℕ} (C : Circle) (i j k : Fin n)
@@ -44,12 +45,18 @@ lemma three_axis_points_not_concyclic
     (hi : OnCircle C (axisConfig n i))
     (hj : OnCircle C (axisConfig n j))
     (hk : OnCircle C (axisConfig n k)) : False := by
-  have hijv : (i.1 : ℝ) ≠ (j.1 : ℝ) := by
-    exact_mod_cast (Fin.ne_iff_v_ne.mp hij)
-  have hikv : (i.1 : ℝ) ≠ (k.1 : ℝ) := by
-    exact_mod_cast (Fin.ne_iff_v_ne.mp hik)
-  have hjkv : (j.1 : ℝ) ≠ (k.1 : ℝ) := by
-    exact_mod_cast (Fin.ne_iff_v_ne.mp hjk)
+  have hijNat : i.1 ≠ j.1 := by
+    intro h
+    exact hij (Fin.ext h)
+  have hikNat : i.1 ≠ k.1 := by
+    intro h
+    exact hik (Fin.ext h)
+  have hjkNat : j.1 ≠ k.1 := by
+    intro h
+    exact hjk (Fin.ext h)
+  have hijv : (i.1 : ℝ) ≠ (j.1 : ℝ) := by exact_mod_cast hijNat
+  have hikv : (i.1 : ℝ) ≠ (k.1 : ℝ) := by exact_mod_cast hikNat
+  have hjkv : (j.1 : ℝ) ≠ (k.1 : ℝ) := by exact_mod_cast hjkNat
   have hi' : (i.1 : ℝ) ^ 2 + C.u * (i.1 : ℝ) + C.w = 0 := by
     simpa [OnCircle, axisConfig] using hi
   have hj' : (j.1 : ℝ) ^ 2 + C.u * (j.1 : ℝ) + C.w = 0 := by

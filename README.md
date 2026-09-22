@@ -51,3 +51,5 @@ CI runs the build and axiom audit on every push and pull request.
 ## Scope and attribution
 
 The missing non-collinearity condition is publicly noted in the Erdős #506 source discussion and is not claimed here as a new mathematical discovery. The contribution of this repository is the explicit complete literal solution and its Lean formalization.
+
+The proof is intentionally independent of the existing corrected/nondegenerate Erdős #506 Lean developments; it imports only Mathlib.
